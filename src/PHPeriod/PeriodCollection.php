@@ -354,6 +354,37 @@ class PeriodCollection extends \ArrayIterator
 
     /**
      *
+     * @param Period $period
+     * @return PeriodCollection
+     */
+    public function subtract(Period $subPeriod){
+        $newCollection = new PeriodCollection();
+        $this->each(function(Period $period) use(&$newCollection, $subPeriod){
+            $newCollection = $newCollection->merge($period->subtract($subPeriod));
+        });
+
+        return $newCollection;
+    }
+
+    /**
+     *
+     * @param PeriodCollection $periodCollection
+     * @return PeriodCollection
+     */
+    public function subtractCollection(PeriodCollection $periodCollection)
+    {
+        $self = $this;
+        while( $periodCollection->valid() ) {
+            $subPeriod = $periodCollection->read();
+            $self = $self->subtract($subPeriod);
+        }
+        $periodCollection->rewind();
+
+        return $self;
+    }
+
+    /**
+     *
      * @param array $periodCollections
      * @return \Closure
      */
