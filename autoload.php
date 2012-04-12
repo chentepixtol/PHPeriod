@@ -9,5 +9,7 @@ $loader->registerNamespaces(array(
     'PHPeriod' => 'src/',
     'Test'  => realpath('.'),
 ));
+
+set_include_path(get_include_path().":vendor/");
 $loader->registerPrefix("Zend_", 'vendor/');
 $loader->register();
