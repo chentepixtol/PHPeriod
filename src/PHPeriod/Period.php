@@ -152,7 +152,8 @@ class Period
      */
     public function isPartiallyLeftSide(Period $period){
         return self::isLower($period->getStartDate(), $this->getStartDate())
-        && self::isGreaterOrEqual($period->getStartDate(), $this->getEndDate());
+        && self::isGreaterOrEqual($period->getStartDate(), $this->getEndDate())
+        && self::isLower($period->getEndDate(), $this->getEndDate());
     }
 
     /**
@@ -171,7 +172,8 @@ class Period
      */
     public function isPartiallyRigthSide(Period $period){
         return self::isLowerOrEqual($period->getEndDate(), $this->getStartDate())
-        && self::isGreater($period->getEndDate(), $this->getEndDate());
+        && self::isGreater($period->getEndDate(), $this->getEndDate())
+        && self::isGreater($period->getStartDate(), $this->getStartDate());
     }
 
 
@@ -213,6 +215,39 @@ class Period
      */
     public static function isLower(\Zend_Date $startDate, \Zend_Date $endDate){
         return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') > 0;
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return \PHPeriod\PeriodCollection
+     */
+    public function subtract(Period $period){
+        $collection = new PeriodCollection();
+
+        if( $period->isLeftSideFrom($this) || $period->isRightSideFrom($this) ){
+            $collection->append($this);
+        }else if( $period->isPartiallyLeftSide($this) ){
+            $startDate = clone $period->getEndDate();
+            $startDate->addSecond(1);
+            $collection->append(new Period($startDate, $this->getEndDate()));
+        }else if( $period->isPartiallyRigthSide($this) ){
+            $endDate = clone $period->getStartDate();
+            $endDate->subSecond(1);
+            $collection->append(new Period($this->getStartDate(), $endDate));
+        }elseif ( $period->isInside($this) ){
+            $endDate = clone $period->getStartDate();
+            $endDate->subSecond(1);
+            $periodOne = new Period($this->getStartDate(), $endDate);
+            $collection->append($periodOne);
+
+            $startDate = clone $period->getEndDate();
+            $startDate->addSecond(1);
+            $periodTwo = new Period($startDate, $this->getEndDate());
+            $collection->append($periodTwo);
+        }
+
+        return $collection;
     }
 
     /**

@@ -344,12 +344,12 @@ class PeriodCollection extends \ArrayIterator
 
     /**
      * convert to array
-     * @return array
+     * @return string
      */
-    public function toArray(){
-        return $this->map(function(Period $period){
-            return array($period->getIndex() => $period->toArray());
-        });
+    public function toString(){
+        return implode($this->map(function(Period $period){
+            return array($period->getIndex() => $period->toString());
+        }), ",");
     }
 
     /**

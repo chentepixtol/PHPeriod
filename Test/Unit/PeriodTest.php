@@ -146,6 +146,30 @@ class PeriodTest extends BaseTest
         $period = new Period(new \Zend_Date("2013-04-11 09:15:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-12-23 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
     }
 
+    /**
+     * @test
+     * @dataProvider getSubtractPeriods
+     */
+    public function subtract($periodStart, $periodEnd, $expected){
+        $sub = new Period(new \Zend_Date($periodStart, 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date($periodEnd, 'yyyy-MM-dd HH:mm:ss'));
+        $period = new Period(new \Zend_Date("2012-04-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-04-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertEquals($expected, $period->subtract($sub)->toString());
+    }
+
+    /**
+     *
+     */
+    public function getSubtractPeriods(){
+        return array(
+            array('2012-04-01 00:00:00', '2012-04-25 23:59:59', ''),
+            array('2012-04-08 00:00:00', '2012-04-09 23:59:59', '2012-04-11 00:00:00 to 2012-04-20 23:59:59'),
+            array('2012-04-08 00:00:00', '2012-04-12 23:59:59', '2012-04-13 00:00:00 to 2012-04-20 23:59:59'),
+            array('2012-04-12 00:00:00', '2012-04-18 23:59:59', '2012-04-11 00:00:00 to 2012-04-11 23:59:59,2012-04-19 00:00:00 to 2012-04-20 23:59:59'),
+            array('2012-04-18 00:00:00', '2012-04-23 23:59:59', '2012-04-11 00:00:00 to 2012-04-17 23:59:59'),
+            array('2012-04-23 00:00:00', '2012-04-25 23:59:59', '2012-04-11 00:00:00 to 2012-04-20 23:59:59'),
+        );
+    }
+
 }
 
 
