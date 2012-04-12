@@ -13,13 +13,13 @@ class Period
      *
      * @var \Zend_Date
      */
-    private $startDate;
+    protected $startDate;
 
     /**
      *
      * @var \Zend_Date
      */
-    private $endDate;
+    protected $endDate;
 
     /**
      *

@@ -2,6 +2,8 @@
 
 namespace Test\Unit;
 
+use PHPeriod\Day;
+
 use PHPeriod\PeriodCollection;
 use PHPeriod\Period;
 
@@ -154,6 +156,14 @@ class PeriodTest extends BaseTest
         $sub = new Period(new \Zend_Date($periodStart, 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date($periodEnd, 'yyyy-MM-dd HH:mm:ss'));
         $period = new Period(new \Zend_Date("2012-04-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-04-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
         $this->assertEquals($expected, $period->subtract($sub)->toString());
+    }
+
+    /**
+     * @test
+     */
+    public function day(){
+        $day = new Day('2012-04-01');
+        $this->assertEquals('2012-04-01 00:00:00 to 2012-04-01 23:59:59', $day->toString());
     }
 
     /**
