@@ -28,14 +28,14 @@ class PeriodTest extends BaseTest
     public function adjust(){
         $period = $this->get2012Period();
 
-        $period->adjustStartDate(new \Zend_Date('2012-01-10 09:15:00'));
+        $period->adjustStartDate(new \Zend_Date('2012-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'));
         $this->assertEquals('2012-01-10 09:15:00 to 2012-12-23 23:59:59', $period->getIndex());
 
-        $period->adjustEndDate(new \Zend_Date('2012-10-19 21:20:00'));
+        $period->adjustEndDate(new \Zend_Date('2012-10-19 21:20:00', 'yyyy-MM-dd HH:mm:ss'));
         $this->assertEquals('2012-01-10 09:15:00 to 2012-10-19 21:20:00', $period->getIndex());
 
         $period = $this->get2012Period();
-        $period->adjust(new \Zend_Date('2012-01-10 09:15:00'), new \Zend_Date('2012-10-19 21:20:00'));
+        $period->adjust(new \Zend_Date('2012-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date('2012-10-19 21:20:00', 'yyyy-MM-dd HH:mm:ss'));
         $this->assertEquals('2012-01-10 09:15:00 to 2012-10-19 21:20:00', $period->getIndex());
     }
 
@@ -55,7 +55,7 @@ class PeriodTest extends BaseTest
      */
     public function invalidAdjust(){
         $period = $this->get2012Period();
-        $period->adjustStartDate(new \Zend_Date('2015-01-10 09:15:00'));
+        $period->adjustStartDate(new \Zend_Date('2015-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'));
     }
 
     /**
@@ -120,7 +120,7 @@ class PeriodTest extends BaseTest
      * @expectedException \PHPeriod\Exception
      */
     public function invalidPeriod(){
-        $period = new Period(new \Zend_Date("2013-04-11 09:15:00"), new \Zend_Date("2012-12-23 23:59:59"));
+        $period = new Period(new \Zend_Date("2013-04-11 09:15:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-12-23 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
     }
 
 }
