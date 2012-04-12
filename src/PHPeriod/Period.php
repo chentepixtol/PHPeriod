@@ -33,6 +33,21 @@ class Period
 
     /**
      *
+     * @return string
+     */
+    public function toString(){
+        return "{$this->startDate->get('yyyy-MM-dd HH:mm:ss')} to {$this->endDate->get('yyyy-MM-dd HH:mm:ss')}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndex(){
+       return $this->toString();
+    }
+
+    /**
+     *
      * @param \Zend_Date $startDate
      */
     public function adjustStartDate(\Zend_Date $startDate){
@@ -59,10 +74,26 @@ class Period
 
     /**
      *
+     * @return \Zend_Date
+     */
+    public function getStartDate(){
+        return $this->startDate;
+    }
+
+    /**
+     *
      * @param \Zend_Date $endDate
      */
     private function setEndDate(\Zend_Date $endDate){
         $this->endDate = clone $endDate;
+    }
+
+    /**
+     *
+     * @return \Zend_Date
+     */
+    public function getEndDate(){
+        return $this->endDate;
     }
 
     /**
@@ -77,10 +108,70 @@ class Period
     }
 
     /**
-     * @return string
+     *
+     * @return \PHPeriod\PeriodCollection
      */
-    public function getIndex(){
-        return "{$this->startDate->get('yyyy-MM-dd HH:mm:ss')} to {$this->endDate->get('yyyy-MM-dd HH:mm:ss')}";
+    public function toCollection(){
+        $collection = new PeriodCollection();
+        $collection->append($this);
+        return $collection;
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isInside(Period $period){
+        return self::isGreaterOrEqual($period->getStartDate(), $this->getStartDate()) &&
+        self::isLowerOrEqual($period->getEndDate(), $this->getEndDate());
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isCoveringTo(Period $period){
+       return $period->isInside($this);
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isLeftSideFrom(Period $period){
+        return self::isLowerOrEqual($period->getStartDate(), $this->getEndDate());
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isRightSideFrom(Period $period){
+        return self::isGreaterOrEqual($period->getEndDate(), $this->getStartDate());
+    }
+
+    /**
+     *
+     * @param \Zend_Date $startDate
+     * @param \Zend_Date $endDate
+     * @return boolean
+     */
+    public static function isGreaterOrEqual(\Zend_Date $startDate, \Zend_Date $endDate){
+        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') <= 0;
+    }
+
+    /**
+     *
+     * @param \Zend_Date $startDate
+     * @param \Zend_Date $endDate
+     * @return boolean
+     */
+    public static function isLowerOrEqual(\Zend_Date $startDate, \Zend_Date $endDate){
+        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') >= 0;
     }
 
     /**

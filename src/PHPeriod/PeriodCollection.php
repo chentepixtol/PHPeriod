@@ -9,7 +9,7 @@ namespace PHPeriod;
  * @category Application\Model\PeriodCollection
  * @author chente
  */
-abstract class PeriodCollection extends \ArrayIterator
+class PeriodCollection extends \ArrayIterator
 {
 
     /**
