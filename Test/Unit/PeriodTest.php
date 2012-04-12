@@ -117,6 +117,29 @@ class PeriodTest extends BaseTest
 
     /**
      * @test
+     */
+    public function isPartiallyLeftSide(){
+        $periodLeft = new Period(new \Zend_Date("2012-01-01 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-15 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $periodRigth = new Period(new \Zend_Date("2012-01-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertTrue($periodLeft->isPartiallyLeftSide($periodRigth));
+        $this->assertFalse($periodRigth->isPartiallyLeftSide($periodLeft));
+        $this->assertFalse($this->get2012January()->isPartiallyLeftSide($this->get2012February()));
+    }
+
+    /**
+     * @test
+     */
+    public function isPartiallyRigthSide(){
+        $periodLeft = new Period(new \Zend_Date("2012-01-01 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-15 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $periodRigth = new Period(new \Zend_Date("2012-01-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+
+        $this->assertTrue($periodRigth->isPartiallyRigthSide($periodLeft));
+        $this->assertFalse($periodLeft->isPartiallyRigthSide($periodRigth));
+        $this->assertFalse($this->get2012February()->isPartiallyRigthSide($this->get2012January()));
+    }
+
+    /**
+     * @test
      * @expectedException \PHPeriod\Exception
      */
     public function invalidPeriod(){

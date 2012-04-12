@@ -142,7 +142,17 @@ class Period
      * @return boolean
      */
     public function isLeftSideFrom(Period $period){
-        return self::isLowerOrEqual($period->getStartDate(), $this->getEndDate());
+        return self::isLower($period->getStartDate(), $this->getEndDate());
+    }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isPartiallyLeftSide(Period $period){
+        return self::isLower($period->getStartDate(), $this->getStartDate())
+        && self::isGreaterOrEqual($period->getStartDate(), $this->getEndDate());
     }
 
     /**
@@ -151,8 +161,19 @@ class Period
      * @return boolean
      */
     public function isRightSideFrom(Period $period){
-        return self::isGreaterOrEqual($period->getEndDate(), $this->getStartDate());
+        return self::isGreater($period->getEndDate(), $this->getStartDate());
     }
+
+    /**
+     *
+     * @param Period $period
+     * @return boolean
+     */
+    public function isPartiallyRigthSide(Period $period){
+        return self::isLowerOrEqual($period->getEndDate(), $this->getStartDate())
+        && self::isGreater($period->getEndDate(), $this->getEndDate());
+    }
+
 
     /**
      *
@@ -172,6 +193,26 @@ class Period
      */
     public static function isLowerOrEqual(\Zend_Date $startDate, \Zend_Date $endDate){
         return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') >= 0;
+    }
+
+    /**
+     *
+     * @param \Zend_Date $startDate
+     * @param \Zend_Date $endDate
+     * @return boolean
+     */
+    public static function isGreater(\Zend_Date $startDate, \Zend_Date $endDate){
+        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') < 0;
+    }
+
+    /**
+     *
+     * @param \Zend_Date $startDate
+     * @param \Zend_Date $endDate
+     * @return boolean
+     */
+    public static function isLower(\Zend_Date $startDate, \Zend_Date $endDate){
+        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') > 0;
     }
 
     /**
