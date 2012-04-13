@@ -166,6 +166,14 @@ class PeriodTest extends BaseTest
 
     /**
      * @test
+     */
+    public function day(){
+        $day = new Day('2012-04-01');
+        $this->assertEquals('2012-04-01 00:00:00 to 2012-04-01 23:59:59', $day->toString());
+    }
+
+    /**
+     * @test
      * @dataProvider getSubtractPeriods
      */
     public function subtract($periodStart, $periodEnd, $expected){
@@ -176,10 +184,26 @@ class PeriodTest extends BaseTest
 
     /**
      * @test
+     * @dataProvider getInterceptPeriods
      */
-    public function day(){
-        $day = new Day('2012-04-01');
-        $this->assertEquals('2012-04-01 00:00:00 to 2012-04-01 23:59:59', $day->toString());
+    public function intersect($periodStart, $periodEnd, $expected){
+        $sub = new Period($periodStart, $periodEnd);
+        $period = new Period("2012-04-11 00:00:00", "2012-04-20 23:59:59");
+        $this->assertEquals($expected, $period->intersect($sub)->toString());
+    }
+
+    /**
+     * @return array
+     */
+    public function getInterceptPeriods(){
+        return array(
+            array('2012-04-01 00:00:00', '2012-04-25 23:59:59', '2012-04-11 00:00:00 to 2012-04-20 23:59:59'),
+            array('2012-04-08 00:00:00', '2012-04-09 23:59:59', ''),
+            array('2012-04-08 00:00:00', '2012-04-12 23:59:59', '2012-04-11 00:00:00 to 2012-04-12 23:59:59'),
+            array('2012-04-12 00:00:00', '2012-04-18 23:59:59', '2012-04-12 00:00:00 to 2012-04-18 23:59:59'),
+            array('2012-04-18 00:00:00', '2012-04-23 23:59:59', '2012-04-18 00:00:00 to 2012-04-20 23:59:59'),
+            array('2012-04-23 00:00:00', '2012-04-25 23:59:59', ''),
+    );
     }
 
     /**

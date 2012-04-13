@@ -288,6 +288,28 @@ class Period
     }
 
     /**
+     *
+     * @param Period $period
+     * @return \PHPeriod\PeriodCollection
+     */
+    public function intersect(Period $period)
+    {
+        $collection = new PeriodCollection();
+
+        if( $period->isCoveringTo($this) ){
+            $collection->append($this);
+        }else if( $period->isPartiallyLeftSide($this) ){
+            $collection->append(new Period($this->getStartDate()->format($this->format), $period->getEndDate()->format($this->format)));
+        }else if( $period->isPartiallyRigthSide($this) ){
+            $collection->append(new Period($period->getStartDate()->format($this->format), $this->getEndDate()->format($this->format)));
+        }elseif ( $period->isInside($this) ){
+            $collection->append($period);
+        }
+
+        return $collection;
+    }
+
+    /**
      * @return int
      */
     public function getElapsedSeconds(){
