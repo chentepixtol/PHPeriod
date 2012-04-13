@@ -30,14 +30,14 @@ class PeriodTest extends BaseTest
     public function adjust(){
         $period = $this->get2012Period();
 
-        $period->adjustStartDate(new \Zend_Date('2012-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'));
+        $period->adjustStartDate('2012-01-10 09:15:00');
         $this->assertEquals('2012-01-10 09:15:00 to 2012-12-23 23:59:59', $period->getIndex());
 
-        $period->adjustEndDate(new \Zend_Date('2012-10-19 21:20:00', 'yyyy-MM-dd HH:mm:ss'));
+        $period->adjustEndDate('2012-10-19 21:20:00');
         $this->assertEquals('2012-01-10 09:15:00 to 2012-10-19 21:20:00', $period->getIndex());
 
         $period = $this->get2012Period();
-        $period->adjust(new \Zend_Date('2012-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date('2012-10-19 21:20:00', 'yyyy-MM-dd HH:mm:ss'));
+        $period->adjust('2012-01-10 09:15:00', '2012-10-19 21:20:00');
         $this->assertEquals('2012-01-10 09:15:00 to 2012-10-19 21:20:00', $period->getIndex());
     }
 
@@ -65,7 +65,7 @@ class PeriodTest extends BaseTest
      */
     public function invalidAdjust(){
         $period = $this->get2012Period();
-        $period->adjustStartDate(new \Zend_Date('2015-01-10 09:15:00', 'yyyy-MM-dd HH:mm:ss'));
+        $period->adjustStartDate('2015-01-10 09:15:00');
     }
 
     /**
@@ -129,8 +129,8 @@ class PeriodTest extends BaseTest
      * @test
      */
     public function isPartiallyLeftSide(){
-        $periodLeft = new Period(new \Zend_Date("2012-01-01 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-15 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
-        $periodRigth = new Period(new \Zend_Date("2012-01-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $periodLeft = new Period("2012-01-01 00:00:00", "2012-01-15 23:59:59");
+        $periodRigth = new Period("2012-01-11 00:00:00", "2012-01-20 23:59:59");
         $this->assertTrue($periodLeft->isPartiallyLeftSide($periodRigth));
         $this->assertFalse($periodRigth->isPartiallyLeftSide($periodLeft));
         $this->assertFalse($this->get2012January()->isPartiallyLeftSide($this->get2012February()));
@@ -140,8 +140,8 @@ class PeriodTest extends BaseTest
      * @test
      */
     public function isPartiallyRigthSide(){
-        $periodLeft = new Period(new \Zend_Date("2012-01-01 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-15 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
-        $periodRigth = new Period(new \Zend_Date("2012-01-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-01-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $periodLeft = new Period("2012-01-01 00:00:00", "2012-01-15 23:59:59");
+        $periodRigth = new Period("2012-01-11 00:00:00", "2012-01-20 23:59:59");
 
         $this->assertTrue($periodRigth->isPartiallyRigthSide($periodLeft));
         $this->assertFalse($periodLeft->isPartiallyRigthSide($periodRigth));
@@ -153,7 +153,7 @@ class PeriodTest extends BaseTest
      * @expectedException \PHPeriod\Exception
      */
     public function invalidPeriod(){
-        $period = new Period(new \Zend_Date("2013-04-11 09:15:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-12-23 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $period = new Period("2013-04-11 09:15:00", "2012-12-23 23:59:59");
     }
 
     /**
@@ -161,8 +161,8 @@ class PeriodTest extends BaseTest
      * @dataProvider getSubtractPeriods
      */
     public function subtract($periodStart, $periodEnd, $expected){
-        $sub = new Period(new \Zend_Date($periodStart, 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date($periodEnd, 'yyyy-MM-dd HH:mm:ss'));
-        $period = new Period(new \Zend_Date("2012-04-11 00:00:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-04-20 23:59:59", 'yyyy-MM-dd HH:mm:ss'));
+        $sub = new Period($periodStart, $periodEnd);
+        $period = new Period("2012-04-11 00:00:00", "2012-04-20 23:59:59");
         $this->assertEquals($expected, $period->subtract($sub)->toString());
     }
 

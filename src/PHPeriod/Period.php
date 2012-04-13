@@ -9,6 +9,13 @@ namespace PHPeriod;
  */
 class Period
 {
+
+    /**
+     *
+     * @var unknown_type
+     */
+    const MYSQL_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+
     /**
      *
      * @var \Zend_Date
@@ -23,12 +30,35 @@ class Period
 
     /**
      *
+     * @var string
+     */
+    protected $format;
+
+    /**
+     *
      * @param \Zend_Date $startDate
      * @param \Zend_Date $endDate
+     * @param string $format
      */
-    public function __construct(\Zend_Date $startDate, \Zend_Date $endDate){
+    public function __construct($startDate, $endDate, $format = self::MYSQL_FORMAT){
+        $this->format = $format;
+        $startDate = $this->makeDate($startDate);
+        $endDate = $this->makeDate($endDate);
         $this->checkRange($startDate, $endDate);
-        $this->adjust($startDate, $endDate);
+        $this->setStartDate($startDate);
+        $this->setEndDate($endDate);
+    }
+
+    /**
+     *
+     * @param string $strDate
+     * @return \Zend_Date
+     */
+    protected function makeDate($strDate){
+        if( !\Zend_Date::isDate($strDate, $this->format) ){
+            throw new Exception("The date {$strDate} with format {$this->format} is invalid");
+        }
+        return new \Zend_Date($strDate, $this->format);
     }
 
     /**
@@ -36,7 +66,7 @@ class Period
      * @return string
      */
     public function toString(){
-        return "{$this->startDate->get('yyyy-MM-dd HH:mm:ss')} to {$this->endDate->get('yyyy-MM-dd HH:mm:ss')}";
+        return "{$this->startDate->get($this->format)} to {$this->endDate->get($this->format)}";
     }
 
     /**
@@ -48,18 +78,20 @@ class Period
 
     /**
      *
-     * @param \Zend_Date $startDate
+     * @param string $startDate
      */
-    public function adjustStartDate(\Zend_Date $startDate){
+    public function adjustStartDate($startDate){
+        $startDate = $this->makeDate($startDate);
         $this->checkRange($startDate, $this->endDate);
         $this->setStartDate($startDate);
     }
 
     /**
      *
-     * @param \Zend_Date $endDate
+     * @param string $endDate
      */
-    public function adjustEndDate(\Zend_Date $endDate){
+    public function adjustEndDate($endDate){
+        $endDate = $this->makeDate($endDate);
         $this->checkRange($this->startDate, $endDate);
         $this->setEndDate($endDate);
     }
@@ -69,7 +101,7 @@ class Period
      * @param \Zend_Date $startDate
      */
     private function setStartDate(\Zend_Date $startDate){
-        $this->startDate = clone $startDate;
+        $this->startDate = $startDate;
     }
 
     /**
@@ -85,7 +117,7 @@ class Period
      * @param \Zend_Date $endDate
      */
     private function setEndDate(\Zend_Date $endDate){
-        $this->endDate = clone $endDate;
+        $this->endDate = $endDate;
     }
 
     /**
@@ -101,7 +133,9 @@ class Period
      * @param \Zend_Date $startDate
      * @param \Zend_Date $endDate
      */
-    public function adjust(\Zend_Date $startDate, \Zend_Date $endDate){
+    public function adjust($startDate, $endDate){
+        $startDate = $this->makeDate($startDate);
+        $endDate = $this->makeDate($endDate);
         $this->checkRange($startDate, $endDate);
         $this->setStartDate($startDate);
         $this->setEndDate($endDate);
@@ -183,8 +217,8 @@ class Period
      * @param \Zend_Date $endDate
      * @return boolean
      */
-    public static function isGreaterOrEqual(\Zend_Date $startDate, \Zend_Date $endDate){
-        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') <= 0;
+    public static function isGreaterOrEqual(\Zend_Date $startDate, \Zend_Date $endDate, $format = self::MYSQL_FORMAT){
+        return $startDate->compare($endDate->get($format), $format) <= 0;
     }
 
     /**
@@ -193,8 +227,8 @@ class Period
      * @param \Zend_Date $endDate
      * @return boolean
      */
-    public static function isLowerOrEqual(\Zend_Date $startDate, \Zend_Date $endDate){
-        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') >= 0;
+    public static function isLowerOrEqual(\Zend_Date $startDate, \Zend_Date $endDate, $format = self::MYSQL_FORMAT){
+        return $startDate->compare($endDate->get($format), $format) >= 0;
     }
 
     /**
@@ -203,8 +237,8 @@ class Period
      * @param \Zend_Date $endDate
      * @return boolean
      */
-    public static function isGreater(\Zend_Date $startDate, \Zend_Date $endDate){
-        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') < 0;
+    public static function isGreater(\Zend_Date $startDate, \Zend_Date $endDate, $format = self::MYSQL_FORMAT){
+        return $startDate->compare($endDate->get($format), $format) < 0;
     }
 
     /**
@@ -213,8 +247,8 @@ class Period
      * @param \Zend_Date $endDate
      * @return boolean
      */
-    public static function isLower(\Zend_Date $startDate, \Zend_Date $endDate){
-        return $startDate->compare($endDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') > 0;
+    public static function isLower(\Zend_Date $startDate, \Zend_Date $endDate, $format = self::MYSQL_FORMAT){
+        return $startDate->compare($endDate->get($format), $format) > 0;
     }
 
     /**
@@ -230,20 +264,20 @@ class Period
         }else if( $period->isPartiallyLeftSide($this) ){
             $startDate = clone $period->getEndDate();
             $startDate->addSecond(1);
-            $collection->append(new Period($startDate, $this->getEndDate()));
+            $collection->append(new Period($startDate->get($this->format), $this->getEndDate()->get($this->format)));
         }else if( $period->isPartiallyRigthSide($this) ){
             $endDate = clone $period->getStartDate();
             $endDate->subSecond(1);
-            $collection->append(new Period($this->getStartDate(), $endDate));
+            $collection->append(new Period($this->getStartDate()->get($this->format), $endDate->get($this->format)));
         }elseif ( $period->isInside($this) ){
             $endDate = clone $period->getStartDate();
             $endDate->subSecond(1);
-            $periodOne = new Period($this->getStartDate(), $endDate);
+            $periodOne = new Period($this->getStartDate()->get($this->format), $endDate->get($this->format));
             $collection->append($periodOne);
 
             $startDate = clone $period->getEndDate();
             $startDate->addSecond(1);
-            $periodTwo = new Period($startDate, $this->getEndDate());
+            $periodTwo = new Period($startDate->get($this->format), $this->getEndDate()->get($this->format));
             $collection->append($periodTwo);
         }
 
@@ -264,7 +298,7 @@ class Period
      * @throws Exception
      */
     private function checkRange(\Zend_Date $startDate, \Zend_Date $endDate){
-        if( $endDate->isEarlier($startDate->get('yyyy-MM-dd HH:mm:ss'), 'yyyy-MM-dd HH:mm:ss') ){
+        if( $endDate->isEarlier($startDate->get($this->format), $this->format) ){
             throw new Exception("The period is invalid");
         }
     }

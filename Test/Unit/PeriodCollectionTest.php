@@ -77,7 +77,7 @@ class PeriodCollectionTest extends BaseTest
      * @param string $hourTo
      */
     private function getPeriod($hourFrom, $hourTo){
-        return new Period(new \Zend_Date("2012-05-05 {$hourFrom}:00", 'yyyy-MM-dd HH:mm:ss'), new \Zend_Date("2012-05-05 {$hourTo}:00", 'yyyy-MM-dd HH:mm:ss'));
+        return new Period("2012-05-05 {$hourFrom}:00", "2012-05-05 {$hourTo}:00");
     }
 
     /**
