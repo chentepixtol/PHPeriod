@@ -52,6 +52,14 @@ class PeriodTest extends BaseTest
     /**
      * @test
      */
+    public function getDuration(){
+        $day = new Day('2012-01-01');
+        $this->assertEquals("23 hours 59 minutes 59 seconds", $day->getDuration()->toHuman());
+    }
+
+    /**
+     * @test
+     */
     public function toCollection(){
         $period = $this->get2012Period();
         $collection = $period->toCollection();

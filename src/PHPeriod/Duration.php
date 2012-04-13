@@ -116,11 +116,11 @@ class Duration
     public function toHuman(){
         $format = "%d days %d hours %d minutes %d seconds";
         $str = str_replace(array(
-            ' 0 days',
             ' 0 hours',
             ' 0 minutes',
             ' 0 seconds',
         ), "", sprintf($format, $this->getDaysPart(), $this->getHoursPart(), $this->getMinutesPart(), $this->getSecondsPart()));
+        $str = preg_replace("/^0 days /", "", $str);
         if( strlen($str) == 0 ){
             $str = "None";
         }

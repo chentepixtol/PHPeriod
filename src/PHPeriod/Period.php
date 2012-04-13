@@ -296,6 +296,14 @@ class Period
 
     /**
      *
+     * @return \PHPeriod\Duration
+     */
+    public function getDuration(){
+        return new Duration($this->getElapsedSeconds());
+    }
+
+    /**
+     *
      * @param \DateTime $startDate
      * @param \DateTime $endDate
      * @throws Exception

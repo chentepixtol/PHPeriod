@@ -58,6 +58,26 @@ class PeriodCollectionTest extends BaseTest
     }
 
     /**
+     * @test
+     */
+    public function elapsedSeconds(){
+        $collection = new PeriodCollection();
+        $collection->append($this->getPeriod("08:21", "18:13"));
+        $collection->append($this->getPeriod("18:45", "21:16"));
+        $this->assertEquals(44580, $collection->getElapsedSeconds());
+    }
+
+    /**
+     * @test
+     */
+    public function duration(){
+        $collection = new PeriodCollection();
+        $collection->append($this->getPeriod("08:21", "18:13"));
+        $collection->append($this->getPeriod("18:45", "21:16"));
+        $this->assertEquals("12 hours 23 minutes", $collection->getDuration()->toHuman());
+    }
+
+    /**
      *
      */
     private function getWorkingDayPeriod(){

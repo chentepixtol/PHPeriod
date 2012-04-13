@@ -384,6 +384,23 @@ class PeriodCollection extends \ArrayIterator
     }
 
     /**
+     * @return int
+     */
+    public function getElapsedSeconds(){
+        return $this->foldLeft(0, function($acc, Period $period){
+            return $acc + $period->getElapsedSeconds();
+        });
+    }
+
+    /**
+     *
+     * @return \PHPeriod\Duration
+     */
+    public function getDuration(){
+        return new Duration($this->getElapsedSeconds());
+    }
+
+    /**
      *
      * @param array $periodCollections
      * @return \Closure
