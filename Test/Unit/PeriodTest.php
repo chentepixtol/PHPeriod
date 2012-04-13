@@ -44,6 +44,14 @@ class PeriodTest extends BaseTest
     /**
      * @test
      */
+    public function getElapsedSeconds(){
+        $day = new Day('2012-01-01');
+        $this->assertEquals(86399, $day->getElapsedSeconds());
+    }
+
+    /**
+     * @test
+     */
     public function toCollection(){
         $period = $this->get2012Period();
         $collection = $period->toCollection();

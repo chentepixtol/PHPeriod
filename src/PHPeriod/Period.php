@@ -251,6 +251,13 @@ class Period
     }
 
     /**
+     * @return int
+     */
+    public function getElapsedSeconds(){
+        return $this->getEndDate()->get('U') - $this->getStartDate()->get('U');
+    }
+
+    /**
      *
      * @param \Zend_Date $startDate
      * @param \Zend_Date $endDate
