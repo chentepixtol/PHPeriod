@@ -368,6 +368,20 @@ class PeriodCollection extends \ArrayIterator
 
     /**
      *
+     * @param Period $period
+     * @return PeriodCollection
+     */
+    public function intersectByPeriod(Period $subPeriod){
+        $newCollection = new PeriodCollection();
+        $this->each(function(Period $period) use(&$newCollection, $subPeriod){
+            $newCollection = $newCollection->merge($period->intersect($subPeriod));
+        });
+
+        return $newCollection;
+    }
+
+    /**
+     *
      * @param PeriodCollection $periodCollection
      * @return PeriodCollection
      */
@@ -381,6 +395,25 @@ class PeriodCollection extends \ArrayIterator
         $periodCollection->rewind();
 
         return $self;
+    }
+
+    /**
+     *
+     * @param PeriodCollection $periodCollection
+     * @return PeriodCollection
+     */
+    public function intersectCollection(PeriodCollection $periodCollection)
+    {
+        $newCollection = new PeriodCollection();
+
+        while( $periodCollection->valid() ) {
+            $subPeriod = $periodCollection->read();
+            $newCollection = $newCollection->merge($this->intersectByPeriod($subPeriod));
+        }
+        $periodCollection->rewind();
+        $newCollection->rewind();
+
+        return $newCollection;
     }
 
     /**

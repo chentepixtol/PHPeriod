@@ -41,6 +41,20 @@ class PeriodCollectionTest extends BaseTest
     /**
      * @test
      */
+    public function intersectByPeriod(){
+        $collection = $this->getWorkingDayPeriod();
+        $newCollection = $collection->intersectByPeriod($this->getPeriod("08:21", "18:13"));
+
+        $this->assertEquals($this->getDateString("08", "21")." to ".$this->getDateString("09").",".
+            $this->getDateString("11")." to ".$this->getDateString("13", "35").",".
+            $this->getDateString("14", "00")." to ".$this->getDateString("14", "20").",".
+            $this->getDateString("16", "47")." to ".$this->getDateString("18", "13")
+            , $newCollection->toString());
+    }
+
+    /**
+     * @test
+     */
     public function subtractCollection(){
         $collection = $this->getWorkingDayPeriod();
 
@@ -54,6 +68,26 @@ class PeriodCollectionTest extends BaseTest
             $this->getDateString("07")." to ".$this->getDateString("08", "20", "59").",".
             $this->getDateString("18", "13", "01")." to ".$this->getDateString("18", "44", "59").",".
             $this->getDateString("21", "16", "01")." to ".$this->getDateString("23")
+            , $newCollection->toString());
+    }
+
+    /**
+     *
+     */
+    public function intersectCollection(){
+        $collection = $this->getWorkingDayPeriod();
+
+        $subCollection = new PeriodCollection();
+        $subCollection->append($this->getPeriod("08:21", "18:13"));
+        $subCollection->append($this->getPeriod("18:45", "21:16"));
+
+        $newCollection = $collection->intersectCollection($subCollection);
+
+        $this->assertEquals($this->getDateString("08", "21")." to ".$this->getDateString("09").",".
+            $this->getDateString("11")." to ".$this->getDateString("13", "35").",".
+            $this->getDateString("14", "00")." to ".$this->getDateString("14", "20").",".
+            $this->getDateString("16", "47")." to ".$this->getDateString("18", "13").",".
+            $this->getDateString("20", "22")." to ".$this->getDateString("21", "16")
             , $newCollection->toString());
     }
 
