@@ -72,7 +72,7 @@ class PeriodCollectionTest extends BaseTest
     }
 
     /**
-     *
+     * @test
      */
     public function intersectCollection(){
         $collection = $this->getWorkingDayPeriod();
@@ -87,6 +87,7 @@ class PeriodCollectionTest extends BaseTest
             $this->getDateString("11")." to ".$this->getDateString("13", "35").",".
             $this->getDateString("14", "00")." to ".$this->getDateString("14", "20").",".
             $this->getDateString("16", "47")." to ".$this->getDateString("18", "13").",".
+            $this->getDateString("18", "45")." to ".$this->getDateString("19").",".
             $this->getDateString("20", "22")." to ".$this->getDateString("21", "16")
             , $newCollection->toString());
     }
