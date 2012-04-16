@@ -220,7 +220,6 @@ class Period
      */
     public static function isGreaterOrEqual(\DateTime $startDate, \DateTime $endDate, $format = self::MYSQL_FORMAT){
         return $endDate->getTimestamp() >= $startDate->getTimestamp();
-        //return $startDate->compare($endDate->get($format), $format) <= 0;
     }
 
     /**
@@ -231,7 +230,6 @@ class Period
      */
     public static function isLowerOrEqual(\DateTime $startDate, \DateTime $endDate, $format = self::MYSQL_FORMAT){
         return $endDate->getTimestamp() <= $startDate->getTimestamp();
-        //return $startDate->compare($endDate->get($format), $format) >= 0;
     }
 
     /**
@@ -299,9 +297,13 @@ class Period
         if( $period->isCoveringTo($this) ){
             $collection->append($this);
         }else if( $period->isPartiallyLeftSide($this) ){
-            $collection->append(new Period($this->getStartDate()->format($this->format), $period->getEndDate()->format($this->format)));
+            if( $this->getStartDate()->getTimestamp() != $period->getEndDate()->getTimestamp() ){
+                $collection->append(new Period($this->getStartDate()->format($this->format), $period->getEndDate()->format($this->format)));
+            }
         }else if( $period->isPartiallyRigthSide($this) ){
-            $collection->append(new Period($period->getStartDate()->format($this->format), $this->getEndDate()->format($this->format)));
+            if( $period->getStartDate()->getTimestamp() != $this->getEndDate()->getTimestamp() ){
+                $collection->append(new Period($period->getStartDate()->format($this->format), $this->getEndDate()->format($this->format)));
+            }
         }elseif ( $period->isInside($this) ){
             $collection->append($period);
         }
@@ -332,7 +334,7 @@ class Period
      */
     private function checkRange(\DateTime $startDate, \DateTime $endDate){
         if( $endDate->getTimestamp() <= $startDate->getTimestamp()  ){
-            throw new Exception("The period is invalid");
+            throw new Exception("The period is invalid: {$startDate->format($this->format)} to {$endDate->format($this->format)}");
         }
     }
 
