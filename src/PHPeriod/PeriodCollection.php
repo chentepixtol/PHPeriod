@@ -358,7 +358,7 @@ class PeriodCollection extends \ArrayIterator
      * @return PeriodCollection
      */
     public function subtract(Period $subPeriod){
-        $newCollection = new PeriodCollection();
+        $newCollection = $this->newInstance();
         $this->each(function(Period $period) use(&$newCollection, $subPeriod){
             $newCollection = $newCollection->merge($period->subtract($subPeriod));
         });
@@ -372,7 +372,7 @@ class PeriodCollection extends \ArrayIterator
      * @return PeriodCollection
      */
     public function intersectByPeriod(Period $subPeriod){
-        $newCollection = new PeriodCollection();
+        $newCollection = $this->newInstance();
         $this->each(function(Period $period) use(&$newCollection, $subPeriod){
             $newCollection = $newCollection->merge($period->intersect($subPeriod));
         });
@@ -404,7 +404,7 @@ class PeriodCollection extends \ArrayIterator
      */
     public function intersectCollection(PeriodCollection $periodCollection)
     {
-        $newCollection = new PeriodCollection();
+        $newCollection = $this->newInstance();
 
         while( $periodCollection->valid() ) {
             $subPeriod = $periodCollection->read();
@@ -431,6 +431,38 @@ class PeriodCollection extends \ArrayIterator
      */
     public function getDuration(){
         return new Duration($this->getElapsedSeconds());
+    }
+
+    /**
+     *
+     * @param int $seconds
+     * @return \PHPeriod\PeriodCollection
+     */
+    public function truncate($seconds)
+    {
+        $collection = $this->newInstance();
+        $currentSeconds = 0;
+
+        $this->rewind();
+        while( $this->valid() ) {
+            $period = $this->read();
+
+            if( ( $period->getElapsedSeconds() + $currentSeconds ) <= $seconds ){
+                $currentSeconds += $period->getElapsedSeconds();
+                $collection->append($period);
+            }else{
+                $endDate = clone $period->getStartDate();
+                $seg = $seconds - $currentSeconds;
+                $endDate->add(new \DateInterval("PT{$seg}S"));
+                $collection->append(new Period($period->getStartDate()->format(Period::MYSQL_FORMAT), $endDate->format(Period::MYSQL_FORMAT)));
+                break;
+            }
+
+        }
+        $this->rewind();
+        $collection->rewind();
+
+        return $collection;
     }
 
     /**

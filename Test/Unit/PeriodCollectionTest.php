@@ -105,6 +105,20 @@ class PeriodCollectionTest extends BaseTest
     /**
      * @test
      */
+    public function truncate(){
+        $collection = new PeriodCollection();
+        $collection->append($this->getPeriod("08:21", "14:13"));
+        $collection->append($this->getPeriod("18:45", "21:16"));
+        $this->assertEquals(30180, $collection->getElapsedSeconds());
+
+        $newCollection = $collection->truncate(24000);
+        $this->assertEquals(24000, $newCollection->getElapsedSeconds());
+        $this->assertEquals("2012-05-05 08:21:00 to 2012-05-05 14:13:00,2012-05-05 18:45:00 to 2012-05-05 19:33:00", $newCollection->toString());
+    }
+
+    /**
+     * @test
+     */
     public function duration(){
         $collection = new PeriodCollection();
         $collection->append($this->getPeriod("08:21", "18:13"));
