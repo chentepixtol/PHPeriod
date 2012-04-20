@@ -119,6 +119,17 @@ class PeriodCollectionTest extends BaseTest
     /**
      * @test
      */
+    public function getLimits(){
+        $collection = new PeriodCollection();
+        $collection->append($this->getPeriod("08:21", "14:13"));
+        $collection->append($this->getPeriod("18:45", "21:16"));
+        $this->assertEquals("2012-05-05 08:21:00", $collection->getStartDate()->format(Period::MYSQL_FORMAT));
+        $this->assertEquals("2012-05-05 21:16:00", $collection->getEndDate()->format(Period::MYSQL_FORMAT));
+    }
+
+    /**
+     * @test
+     */
     public function duration(){
         $collection = new PeriodCollection();
         $collection->append($this->getPeriod("08:21", "18:13"));

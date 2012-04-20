@@ -466,6 +466,42 @@ class PeriodCollection extends \ArrayIterator
     }
 
     /**
+     * @return \DateTime
+     * @throws Exception
+     */
+    public function getStartDate(){
+        if( $this->isEmpty() ){
+            throw new Exception("El periodo esta vacio");
+        }
+        return $this->getOne()->getStartDate();
+    }
+
+    /**
+     * @return \DateTime
+     * @throws Exception
+     */
+    public function getEndDate(){
+        if( $this->isEmpty() ){
+            throw new Exception("El periodo esta vacio");
+        }
+        $last = $this->getLast();
+        if( null == $last ){
+            throw new Exception("No se pudo encontrar el ultimo elemento");
+        }
+        return $last->getEndDate();
+    }
+
+    /**
+     *
+     * @return \PHPeriod\Period
+     */
+    public function getLast(){
+        $keys = $this->getPrimaryKeys();
+        $key = array_pop($keys);
+        return $this->getByPK($key);
+    }
+
+    /**
      *
      * @param array $periodCollections
      * @return \Closure
